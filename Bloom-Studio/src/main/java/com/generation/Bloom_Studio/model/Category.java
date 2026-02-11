@@ -3,6 +3,7 @@ package com.generation.Bloom_Studio.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,7 +14,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "id_categoria")
-    private Integer idCategoria;
+    private Long idCategoria;
 
     @Column (name = "nombre_categoria", length = 50, nullable = false)
     private String nombreCategoria;
@@ -27,7 +28,12 @@ public class Category {
     @Column (name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
-    public Category(Integer idCategoria, String nombreCategoria, Boolean estatus, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
+// cocneccion con productos n:m
+    @ManyToMany (mappedBy = "productos",cascade = CascadeType.ALL)
+    private List<Products>productos;
+
+
+    public Category(Long idCategoria, String nombreCategoria, Boolean estatus, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
         this.idCategoria = idCategoria;
         this.nombreCategoria = nombreCategoria;
         this.estatus = estatus;
@@ -38,11 +44,11 @@ public class Category {
     public Category() {
     }
 
-    public Integer getIdCategoria() {
+    public Long getIdCategoria() {
         return idCategoria;
     }
 
-    public void setIdCategoria(Integer idCategoria) {
+    public void setIdCategoria(Long idCategoria) {
         this.idCategoria = idCategoria;
     }
 
