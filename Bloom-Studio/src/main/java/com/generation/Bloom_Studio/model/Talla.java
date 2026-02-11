@@ -3,10 +3,11 @@ package com.generation.Bloom_Studio.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tallas")
-public class Tallas {
+public class Talla {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,5 +75,16 @@ public class Tallas {
                 ", fechaCreacion=" + fechaCreacion +
                 ", fechaActualizacion=" + fechaActualizacion +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Talla tallas)) return false;
+        return Objects.equals(id, tallas.id) && Objects.equals(nombreTalla, tallas.nombreTalla) && Objects.equals(estatus, tallas.estatus) && Objects.equals(fechaCreacion, tallas.fechaCreacion) && Objects.equals(fechaActualizacion, tallas.fechaActualizacion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombreTalla, estatus, fechaCreacion, fechaActualizacion);
     }
 }
