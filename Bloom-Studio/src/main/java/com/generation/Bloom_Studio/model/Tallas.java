@@ -64,4 +64,15 @@ public class Tallas {
     public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
+
+    @Override
+    public String toString() {
+        return "Tallas{" +
+                "id=" + id +
+                ", nombreTalla='" + nombreTalla + '\'' +
+                ", estatus=" + estatus +
+                ", fechaCreacion=" + fechaCreacion +
+                ", fechaActualizacion=" + fechaActualizacion +
+                '}';
+    }
 }
