@@ -25,5 +25,43 @@ public class Tallas {
     @Column(name = "fecha_actualizacion", insertable = false, updatable = false)
     private LocalDateTime fechaActualizacion;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombreTalla() {
+        return nombreTalla;
+    }
+
+    public void setNombreTalla(String nombreTalla) {
+        this.nombreTalla = nombreTalla;
+    }
+
+    public Boolean getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(Boolean estatus) {
+        this.estatus = estatus;
+    }
+
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public LocalDateTime getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
+    }
 }
