@@ -1,5 +1,6 @@
 package com.generation.Bloom_Studio.service.imp;
 
+import com.generation.Bloom_Studio.model.EstadoProducto;
 import com.generation.Bloom_Studio.model.Products;
 import com.generation.Bloom_Studio.repository.ProductoRepository;
 import com.generation.Bloom_Studio.service.ProductService;
@@ -20,18 +21,45 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public Products crearProducto(Products products) {
-        if (products.getSku() != null && productoRepository.existsBySku(products.getSku())) {
-            throw new IllegalArgumentException("El SKU ya existe.");
+
+        if (products.getSku() == null || products.getSku().isBlank()){
+            throw new IllegalArgumentException("El SKU es obligatorio.");
         }
+
         if (products.getNombre() == null || products.getNombre().isBlank()) {
             throw new IllegalArgumentException("El nombre es obligatorio.");
         }
         if (products.getPrecio() == null) {
             throw new IllegalArgumentException("El precio es obligatorio.");
         }
-        products.setEstatus(true);
 
-        return productoRepository.save(products);
+        return productoRepository.findBySku(products.getSku())
+                .map(existente -> {
+                    if (Boolean.TRUE.equals(existente.getEstatus())) {
+                        throw new IllegalArgumentException("El SKU ya existe en un producto activo.");
+                    }
+
+                    existente.setNombre(products.getNombre());
+                    existente.setDescripcion(products.getDescripcion());
+                    existente.setPrecio(products.getPrecio());
+                    existente.setImgUrl(products.getImgUrl());
+
+                    if (products.getEstadoProducto() != null) {
+                        existente.setEstadoProducto(products.getEstadoProducto());
+                    }
+                    existente.setEstatus(true);
+                    return productoRepository.save(existente);
+                })
+                .orElseGet(() -> {
+                    products.setEstatus(true);
+
+                    // Si no viene estadoProducto, asigne un default coherente con su modelo
+                    if (products.getEstadoProducto() == null) {
+                        products.setEstadoProducto(EstadoProducto.ACTIVO);
+                    }
+
+                    return productoRepository.save(products);
+                });
     }
 
     @Override
