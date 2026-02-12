@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name="productos")
+@Table(name = "productos")
 public class Products {
 
     @Id
@@ -53,9 +53,9 @@ public class Products {
     @JoinTable(name = "producto_categoria",joinColumns = @JoinColumn(name = "id_producto"),inverseJoinColumns = @JoinColumn(name = "id_categoria"))
     private List<Category> categorias;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+  /*  @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "producto_etiqueta",joinColumns = @JoinColumn(name = "id_producto"),inverseJoinColumns = @JoinColumn(name = "id_etiqueta"))
-    private List<Etiqueta> etiquetas;
+    private List<Etiqueta> etiquetas;*/
 
     public Products(Long id, String sku, String nombre, String descripcion, BigDecimal precio, String imgUrl, EstadoProducto estadoProducto, Boolean estatus, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
         this.id = id;
@@ -70,10 +70,10 @@ public class Products {
         this.fechaActualizacion = fechaActualizacion;
     }
 
-    public Products(Long id, List<Category> categorias, List<Etiqueta> etiquetas) {
+    public Products(Long id, List<Category> categorias/*, List<Etiqueta> etiquetas*/) {
         this.id = id;
         this.categorias = categorias;
-        this.etiquetas = etiquetas;
+        /*this.etiquetas = etiquetas;*/
     }
 
     public Products(){}
@@ -86,13 +86,13 @@ public class Products {
         this.categorias = categorias;
     }
 
-    public List<Etiqueta> getEtiquetas() {
+    /*public List<Etiqueta> getEtiquetas() {
         return etiquetas;
-    }
+    }*/
 
-    public void setEtiquetas(List<Etiqueta> etiquetas) {
+   /* public void setEtiquetas(List<Etiqueta> etiquetas) {
         this.etiquetas = etiquetas;
-    }
+    }*/
 
     public Long getId() {
         return id;
@@ -188,18 +188,17 @@ public class Products {
                 ", fechaCreacion=" + fechaCreacion +
                 ", fechaActualizacion=" + fechaActualizacion +
                 ", categorias=" + categorias +
-                ", etiquetas=" + etiquetas +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Products products)) return false;
-        return Objects.equals(id, products.id) && Objects.equals(sku, products.sku) && Objects.equals(nombre, products.nombre) && Objects.equals(descripcion, products.descripcion) && Objects.equals(precio, products.precio) && Objects.equals(imgUrl, products.imgUrl) && estadoProducto == products.estadoProducto && Objects.equals(estatus, products.estatus) && Objects.equals(fechaCreacion, products.fechaCreacion) && Objects.equals(fechaActualizacion, products.fechaActualizacion) && Objects.equals(categorias, products.categorias) && Objects.equals(etiquetas, products.etiquetas);
+        return Objects.equals(id, products.id) && Objects.equals(sku, products.sku) && Objects.equals(nombre, products.nombre) && Objects.equals(descripcion, products.descripcion) && Objects.equals(precio, products.precio) && Objects.equals(imgUrl, products.imgUrl) && estadoProducto == products.estadoProducto && Objects.equals(estatus, products.estatus) && Objects.equals(fechaCreacion, products.fechaCreacion) && Objects.equals(fechaActualizacion, products.fechaActualizacion) && Objects.equals(categorias, products.categorias);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sku, nombre, descripcion, precio, imgUrl, estadoProducto, estatus, fechaCreacion, fechaActualizacion, categorias, etiquetas);
+        return Objects.hash(id, sku, nombre, descripcion, precio, imgUrl, estadoProducto, estatus, fechaCreacion, fechaActualizacion, categorias);
     }
 }

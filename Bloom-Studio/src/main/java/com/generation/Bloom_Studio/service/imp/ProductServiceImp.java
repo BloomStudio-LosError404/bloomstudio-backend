@@ -51,11 +51,11 @@ public class ProductServiceImp implements ProductService {
     public Products actualizarProducto(Long id, Products products) {
         Products existente = obtenerProductoId(id);
 
-        existente.setNombre(products.getNombre());
-        existente.setDescripcion(products.getDescripcion());
-        existente.setPrecio(products.getPrecio());
-        existente.setImgUrl(products.getImgUrl());
-        existente.setEstadoProducto(products.getEstadoProducto());
+        if(products.getNombre() != null) existente.setNombre(products.getNombre());
+        if(products.getDescripcion() != null )existente.setDescripcion(products.getDescripcion());
+        if(products.getPrecio() != null) existente.setPrecio(products.getPrecio());
+        if(products.getImgUrl() != null )existente.setImgUrl(products.getImgUrl());
+        if(products.getEstadoProducto() != null) existente.setEstadoProducto(products.getEstadoProducto());
 
         if (products.getSku() != null && !products.getSku().equals(existente.getSku())) {
             if (productoRepository.existsBySku(products.getSku())) {
