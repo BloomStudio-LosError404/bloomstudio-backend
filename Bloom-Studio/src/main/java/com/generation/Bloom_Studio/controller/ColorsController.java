@@ -1,7 +1,6 @@
 package com.generation.Bloom_Studio.controller;
 
-import com.generation.Bloom_Studio.model.Etiqueta;
-import com.generation.Bloom_Studio.service.EtiquetaService;
+import com.generation.Bloom_Studio.model.Colors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,28 +8,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/etiquetas")
+@RequestMapping("/api/colores")
 @CrossOrigin(origins = "*")
-public class EtiquetaController {
+public class ColorsController {
 
     @Autowired
-    private EtiquetaService etiquetaService;
+    private ColorsService colorsService;
 
     @GetMapping
-    public List<Etiqueta> getAll() {
+    public List<Colors> getAll() {
         return etiquetaService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Etiqueta> getById(@PathVariable Long id) {
+    public ResponseEntity<Colors> getById(@PathVariable Long id) {
         return etiquetaService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Etiqueta create(@RequestBody Etiqueta etiqueta) {
-        return etiquetaService.save(etiqueta);
+    public Colors create(@RequestBody Colors colors) {
+        return etiquetaService.save(colors);
     }
 
 
