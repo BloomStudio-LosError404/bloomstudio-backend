@@ -6,6 +6,7 @@ import com.generation.Bloom_Studio.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 @Service
@@ -38,4 +39,29 @@ public class CategoryService {
         return categoryRepository.findByEstatus(estatus);
     }
 
+    // deleteCategory por ID
+
+    public void deleteCategory (Long idCategoria){
+        if(categoryRepository.existsById(idCategoria)){
+            categoryRepository.deleteById(idCategoria);
+        }else {
+            throw new UserPrincipalNotFoundException(idCategoria);
+        }
+    }
+
+    // updateCategory
+
+    public Category updateCategory( Category category, Long idCategoria){
+        return categoryRepository.findById(nombreCategoria)
+                .map(Category categoryData ->{
+                    categoryData.setNombreCategoria(category.getNombreCategoria());
+                    categoryData.setEstatus(category.getEstatus());
+                    categoryData.setFechaCreacion(category.getFechaCreacion());
+                    return categoryRepository.save(categoryData);
+
+                })
+                .orElseThrow(() -> new CategoryNotFoundException(idCategoria);
+    }
+
 }
+
