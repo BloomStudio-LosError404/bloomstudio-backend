@@ -29,6 +29,7 @@ public class TallaService {
 
     // Metodo para crear nueva talla
     public Talla createTalla(Talla newTalla) {
+        newTalla.setEstatus(true);
         return tallaRepository.save(newTalla);
     }
 

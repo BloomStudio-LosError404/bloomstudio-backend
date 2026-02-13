@@ -1,6 +1,7 @@
 package com.generation.Bloom_Studio.model;
 
 import jakarta.persistence.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -25,6 +26,15 @@ public class Talla {
 
     @Column(name = "fecha_actualizacion", insertable = false, updatable = false)
     private LocalDateTime fechaActualizacion;
+
+    public Talla(Long id, String nombreTalla, Boolean estatus, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
+        this.id = id;
+        this.nombreTalla = nombreTalla;
+        this.estatus = estatus;
+        this.fechaCreacion = fechaCreacion;
+        this.fechaActualizacion = fechaActualizacion;
+    }
+    public Talla(){}
 
     public Long getId() {
         return id;

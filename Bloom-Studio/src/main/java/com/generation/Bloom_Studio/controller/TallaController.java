@@ -20,7 +20,7 @@ public class TallaController {
     }
 
     //  GET todas las tallas
-    @GetMapping
+    @GetMapping("/AllTallas")
     public ResponseEntity<List<Talla>> getAllTallas() {
         return ResponseEntity.ok(tallaService.getTalla());
     }
@@ -32,20 +32,20 @@ public class TallaController {
     }
 
     // GET talla por ID
-    @GetMapping("/{id}")
+    @GetMapping("/Gettalla/{id}")
     public ResponseEntity<Talla> getTallaById(@PathVariable Long id) {
         return ResponseEntity.ok(tallaService.findById(id));
     }
 
     //  POST crear nueva talla
-    @PostMapping
+    @PostMapping("/Createtalla")
     public ResponseEntity<Talla> createTalla(@RequestBody Talla talla) {
         Talla nuevaTalla = tallaService.createTalla(talla);
         return new ResponseEntity<>(nuevaTalla, HttpStatus.CREATED);
     }
 
     // PUT actualizar talla
-    @PutMapping("/{id}")
+    @PutMapping("/updatetalla/{id}")
     public ResponseEntity<Talla> updateTalla(@RequestBody Talla talla,
                                              @PathVariable Long id) {
         Talla tallaActualizada = tallaService.updateTalla(talla, id);
@@ -53,7 +53,7 @@ public class TallaController {
     }
 
     // DELETE (soft delete)
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deletetalla/{id}")
     public ResponseEntity<Void> deleteTalla(@PathVariable Long id) {
         tallaService.deleteTalla(id);
         return ResponseEntity.noContent().build();
