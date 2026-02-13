@@ -13,7 +13,7 @@ import java.util.List;
 public class ColorsController {
 
     @Autowired
-    private ColorsService colorsService;
+    private ColorsService colorService;
 
     @GetMapping
     public List<Colors> getAll() {
