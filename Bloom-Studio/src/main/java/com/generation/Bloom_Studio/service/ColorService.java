@@ -5,6 +5,7 @@ import com.generation.Bloom_Studio.model.Colors;
 import com.generation.Bloom_Studio.repository.ColorsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 
 public class ColorService {
@@ -12,27 +13,27 @@ public class ColorService {
     private final ColorsRepository colorsRepository;
 
     @Autowired
-    public TallaService(ColorsRepository colorsRepository) {
-        this.tallaRepository = tallaRepository;
+    public ColorService(ColorsRepository colorsRepository) {
+        this.colorsRepository = colorsRepository;
     }
 
     // Metodo para recuperar todas las tallas
-    public List<Talla> getTalla() {
-        return tallaRepository.findAll();
+    public List<Colors> getTalla() {
+        return colorsRepository.findAll();
     }
     //Metodo para recuperar todas las talals con el estatus en true
-    public List<Talla> getTallatrue() {
-        return tallaRepository.findByEstatusTrue();
+    public List<Colors> getTallatrue() {
+        return colorsRepository.findByEstatusTrue();
     }
 
     // Metodo para crear nueva talla
-    public Talla createTalla(Talla newTalla) {
-        return tallaRepository.save(newTalla);
+    public Colors createTalla(Colors newTalla) {
+        return colorsRepository.save(newTalla);
     }
 
     // findByNombreTalla
-    public Talla findByNombreTalla(String nombreTalla) {
-        return tallaRepository.findByNombreTalla(nombreTalla);
+    public Colors findByNombreTalla(String nombreTalla) {
+        return colorsRepository.findByNombreTalla(nombreTalla);
     }
 
     // findById
