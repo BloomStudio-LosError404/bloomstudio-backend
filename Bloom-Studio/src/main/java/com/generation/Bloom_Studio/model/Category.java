@@ -27,10 +27,10 @@ public class Category {
 
     @Column (name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
-/*
-// cocneccion con productos n:m
+
+//cocneccion con productos n:m
     @ManyToMany (mappedBy = "productos",cascade = CascadeType.ALL)
-    private List<Products>productos;*/
+    private List<Products>productos;
 
 
     public Category(Long idCategoria, String nombreCategoria, Boolean estatus, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
