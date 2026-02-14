@@ -1,7 +1,7 @@
 package com.generation.Bloom_Studio.controller;
 
+import com.generation.Bloom_Studio.exceptions.CategoryPrincipalNotFoundException;
 import com.generation.Bloom_Studio.model.Category;
-import com.generation.Bloom_Studio.service.CategoryNotFoundException;
 import com.generation.Bloom_Studio.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-RequestMapping("/api/v1")
+@RequestMapping("/api/v1")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -29,10 +29,10 @@ public class CategoryController {
     // Clase para manejar los status
     @PostMapping("/new-category")
     public ResponseEntity<Category> saveUser(@RequestBody Category newCategory){
-            Category categoryByCategory = categoryService.findByNombreCategoria(newCategory.getNombreCategoria()); ;
+            List<Category> existing = categoryService.findByNombreCategoria(newCategory.getNombreCategoria()); ;
          // Evaluar si los valores de una instancia ya existen
         //Implementar dos códigos de estado (409 y 201)
-        if(categoryByCategory != null){
+        if(!existing.isEmpty()){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
             // return new ResponseEntity<>(HttpStatus.CREATED);
@@ -42,25 +42,24 @@ public class CategoryController {
     }
 
     // Mapear findById (200 y 404)
-    @GetMapping("/category/{id}")
+    @GetMapping("/category/{idCategoria}")
     public ResponseEntity<Category> categoryFindBy(@PathVariable Long idCategoria){
         try{
-            return ResponseEntity.ok(categoryService.findById(idCategoria));
-        }catch (CategoryNotFoundException e){
-            // return ResponseEntity.notFound().build(); --Cualquiera de los dos metodos funciona
+            return ResponseEntity.ok(categoryService.findByIdCategoria(idCategoria));
+        }catch (CategoryPrincipalNotFoundException e){
             return new ResponseEntity <>(HttpStatus.NOT_FOUND);
 
         }
     }
 
     // Mapear (204 y 404)
-    @DeleteMapping("/delete-user/{id}")
+    @DeleteMapping("/delete-category/{idCategoria}")
     public ResponseEntity<Category> deleteById(@PathVariable Long idCategoria){
         try{
             categoryService.deleteCategory(idCategoria);
              return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        }catch (CategoryNotFoundException e){
+        } catch (CategoryPrincipalNotFoundException e){
             return new ResponseEntity <>(HttpStatus.NOT_FOUND);
         }
     }
@@ -69,9 +68,9 @@ public class CategoryController {
     @PutMapping("/update-category/{idCategoria}")
     public ResponseEntity<Category> updateUser(@RequestBody Category category,@PathVariable Long idCategoria) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(CategoryService.updateCategory(category, idCategoria));
+            return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.updateCategory(category, idCategoria));
 
-        } catch (CategoryNotFoundException e){
+        } catch (CategoryPrincipalNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

@@ -1,6 +1,7 @@
 package com.generation.Bloom_Studio.service;
 
 
+import com.generation.Bloom_Studio.exceptions.CategoryPrincipalNotFoundException;
 import com.generation.Bloom_Studio.model.Category;
 import com.generation.Bloom_Studio.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,34 +35,41 @@ public class CategoryService {
         return categoryRepository.findByNombreCategoria(nombrecategoria);
     }
 
-    // findByEstatus
-    public List<Category> findByEstatus (Boolean estatus){
-        return categoryRepository.findByEstatus(estatus);
+    // findByIdcategoria
+
+    public Category findByIdCategoria(Long idCategoria) throws CategoryPrincipalNotFoundException {
+        return categoryRepository.findById(idCategoria)
+                .orElseThrow(() -> new CategoryPrincipalNotFoundException(idCategoria));
     }
+
+
+
+
 
     // deleteCategory por ID
 
-    public void deleteCategory (Long idCategoria){
+    public void deleteCategory (Long idCategoria) throws CategoryPrincipalNotFoundException {
         if(categoryRepository.existsById(idCategoria)){
             categoryRepository.deleteById(idCategoria);
         }else {
-            throw new UserPrincipalNotFoundException(idCategoria);
+            throw new CategoryPrincipalNotFoundException(idCategoria);
         }
     }
 
     // updateCategory
 
-    public Category updateCategory( Category category, Long idCategoria){
-        return categoryRepository.findById(nombreCategoria)
-                .map(Category categoryData ->{
+    public Category updateCategory( Category category, Long idCategoria) throws CategoryPrincipalNotFoundException {
+        return categoryRepository.findById(idCategoria)
+                .map(categoryData->{
                     categoryData.setNombreCategoria(category.getNombreCategoria());
                     categoryData.setEstatus(category.getEstatus());
-                    categoryData.setFechaCreacion(category.getFechaCreacion());
+
                     return categoryRepository.save(categoryData);
 
                 })
-                .orElseThrow(() -> new CategoryNotFoundException(idCategoria);
+                .orElseThrow(() -> new CategoryPrincipalNotFoundException(idCategoria));
     }
+
 
 }
 
