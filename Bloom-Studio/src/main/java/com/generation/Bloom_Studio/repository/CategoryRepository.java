@@ -10,6 +10,7 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findByNombreCategoria(String nombreCategoria);
-    List<Category> findByEstatus(Boolean estatus);
+    Category findByIdCategoria(Long idCategoria);
+
 
 }
