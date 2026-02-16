@@ -19,9 +19,9 @@ public class Inventory {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_color", nullable = false)
-    private Color color;
+    private Colors color;
 
-    @ManyToOne(optional = false, FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_talla", nullable = false)
     private Talla tallas;
 
@@ -37,7 +37,7 @@ public class Inventory {
     private LocalDateTime fechaActualizacion;
 
 
-    public Inventory(Long id, Products products, Color color, Talla tallas, Integer cantidad, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
+    public Inventory(Long id, Products products, Colors color, Talla tallas, Integer cantidad, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
         this.id = id;
         this.products = products;
         this.color = color;
@@ -78,11 +78,11 @@ public class Inventory {
         this.products = products;
     }
 
-    public Color getColor() {
+    public Colors getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(Colors color) {
         this.color = color;
     }
 

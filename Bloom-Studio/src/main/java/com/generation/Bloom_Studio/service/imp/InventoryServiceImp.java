@@ -1,7 +1,13 @@
 package com.generation.Bloom_Studio.service.imp;
 
+import com.generation.Bloom_Studio.model.Colors;
 import com.generation.Bloom_Studio.model.Inventory;
+import com.generation.Bloom_Studio.model.Products;
+import com.generation.Bloom_Studio.model.Talla;
+import com.generation.Bloom_Studio.repository.ColorsRepository;
 import com.generation.Bloom_Studio.repository.InventoryRepository;
+import com.generation.Bloom_Studio.repository.ProductoRepository;
+import com.generation.Bloom_Studio.repository.TallaRepository;
 import com.generation.Bloom_Studio.service.InventoryService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -14,11 +20,11 @@ import java.util.List;
 public class InventoryServiceImp implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
-    private final ProductRepository productRepository;
-    private final ColorRepository colorRepository;
+    private final ProductoRepository productRepository;
+    private final ColorsRepository colorRepository;
     private final TallaRepository tallaRepository;
 
-    public InventoryServiceImp(InventoryRepository inventoryRepository, ProductRepository productRepository, ColorRepository colorRepository, TallaRepository tallaRepository){
+    public InventoryServiceImp(InventoryRepository inventoryRepository, ProductoRepository productRepository, ColorsRepository colorRepository, TallaRepository tallaRepository){
         this.inventoryRepository = inventoryRepository;
         this.productRepository = productRepository;
         this.colorRepository = colorRepository;
@@ -35,7 +41,7 @@ public class InventoryServiceImp implements InventoryService {
             throw new IllegalArgumentException("No se puede gestionar inventario de un producto desactivado.");
         }
 
-        Color color = colorRepository.findById(colorId).orElseThrow(() -> new EntityNotFoundException("Color no encontrado: " + colorId));
+        Colors color = colorRepository.findById(colorId).orElseThrow(() -> new EntityNotFoundException("Color no encontrado: " + colorId));
 
         Talla talla = tallaRepository.findById(tallaId).orElseThrow(() -> new EntityNotFoundException("Talla no encontrada: " + tallaId));
 
@@ -53,44 +59,46 @@ public class InventoryServiceImp implements InventoryService {
     }
 
     @Override
-    public Inventory incrementar(Long inventarioId, Integer delta){
-        if(delta == null || delta<=0){
-            throw new IllegalArgumentException("El incremento debe ser mayor que cero.");
+    public Inventory incrementar(Long inventarioId, Integer delta) {
+        if (delta == null || delta <= 0) throw new IllegalArgumentException("El incremento debe ser mayor que cero.");
 
-            Inventory inventory = obtenerPorId(inventarioId);
-            if(!Boolean.TRUE.equals(inventory.getProducts().getEstatus())){
-                throw new IllegalArgumentException("No se puede modificar inventario de un producto desactivado.");
-            }
-            inventory.incrementar(delta);
-            return inventoryRepository.save(inventory);
+        Inventory inv = obtenerPorId(inventarioId);
+        if (!Boolean.TRUE.equals(inv.getProducts().getEstatus())) {
+            throw new IllegalArgumentException("No se puede modificar inventario de un producto desactivado.");
         }
 
-        @Override
-        public Inventory decrementar(Long inventarioId, Integer delta){
-            if(delta == null || delta <= 0) throw new IllegalArgumentException("La cantidad debe ser mayor que cero.");
+        inv.incrementar(delta);
+        return inventoryRepository.save(inv);
+    }
 
-            Inventory inventory = obtenerPorId(inventarioId);
-            if(!Boolean.TRUE.equals(inventory.getProducts().getEstatus())){
+        @Override
+        public Inventory decrementar(Long inventarioId, Integer delta) {
+            if (delta == null || delta <= 0) throw new IllegalArgumentException("El decremento debe ser mayor que cero.");
+
+            Inventory inv = obtenerPorId(inventarioId);
+            if (!Boolean.TRUE.equals(inv.getProducts().getEstatus())) {
                 throw new IllegalArgumentException("No se puede modificar inventario de un producto desactivado.");
             }
 
-            inventory.decrementar(delta);
-            return inventoryRepository.save(inventory);
-        }
-
-        @Override
-        @Transactional
-        public Inventory obtenerPorId(Long inventarioId){
-            return inventoryRepository.findBy(inventarioId).orElseThrow(() -> new EntityNotFoundException("Inventario no encontrado: " + inventarioId));
-
+            inv.decrementar(delta);
+            return inventoryRepository.save(inv);
         }
 
         @Override
         @Transactional(readOnly = true)
-        public List<Inventory> listaPorProducto(Long productoId){
-            return inventoryRepository.findAllByProductoId(productoId);
+        public Inventory obtenerPorId(Long inventarioId) {
+            return inventoryRepository.findById(inventarioId)
+                    .orElseThrow(() -> new EntityNotFoundException("Inventario no encontrado: " + inventarioId));
         }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Inventory> listaPorProducto(Long productoId) {
+        return inventoryRepository.findAllByProductoId(productoId);
     }
+
+
+
 
 
 
