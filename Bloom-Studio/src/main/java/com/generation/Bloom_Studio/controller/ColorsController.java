@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/colores")
+@RequestMapping("/api/v1/colores")
 
 public class ColorsController {
 
@@ -41,7 +41,7 @@ public class ColorsController {
     }
 
     // PUT actualizar color
-    @PostMapping("/{id]")
+    @PostMapping("/{id}")
     public ResponseEntity<Colors> updateColor(@RequestBody Colors color, @PathVariable Long id){
         Colors colorActualizado = colorService.updateColor(color, id);
         return ResponseEntity.ok(colorActualizado);

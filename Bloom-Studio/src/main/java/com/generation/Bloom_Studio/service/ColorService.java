@@ -56,7 +56,7 @@ public class ColorService {
     public Colors updateColor(Colors color, Long id) {
         return colorsRepository.findById(id)
                 .map(colorData -> {
-                    colorData.setNombre_color(color.getNombre_color());
+                    colorData.setNombreColor(color.getNombreColor());
                     colorData.setEstatus(color.getEstatus());
                     return colorsRepository.save(colorData);
                 })
