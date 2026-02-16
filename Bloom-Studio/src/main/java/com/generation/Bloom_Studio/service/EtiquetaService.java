@@ -2,6 +2,7 @@ package com.generation.Bloom_Studio.service;
 
 
 import com.generation.Bloom_Studio.model.Colors;
+import com.generation.Bloom_Studio.model.Etiqueta;
 import com.generation.Bloom_Studio.repository.EtiquetaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,15 @@ public class EtiquetaService {
     @Autowired
     private EtiquetaRepository etiquetaRepository;
 
-    public List<Colors> findAll(){
+    public List<Etiqueta> findAll(){
         return etiquetaRepository.findAll();
     }
-    public Optional<Colors> findById(Long id) {
+    public Optional<Etiqueta> findById(Long id) {
         return etiquetaRepository.findById(id);
     }
 
-    public Colors save(Colors colors) {
-        return etiquetaRepository.save(colors);
+    public Etiqueta save(Etiqueta etiqueta) {
+        return etiquetaRepository.save(etiqueta);
     }
 
     public void delete(Long id) {

@@ -1,8 +1,10 @@
 package com.generation.Bloom_Studio.service;
 
 import com.generation.Bloom_Studio.model.Inventory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 public interface InventoryService {
 

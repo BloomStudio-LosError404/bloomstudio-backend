@@ -45,7 +45,7 @@ public class InventoryServiceImp implements InventoryService {
 
         Talla talla = tallaRepository.findById(tallaId).orElseThrow(() -> new EntityNotFoundException("Talla no encontrada: " + tallaId));
 
-        Inventory inventory = inventoryRepository.findByProductoIdAndColorIdAndTallaId(productoId, colorId,tallaId).orElseGet(() -> {
+        Inventory inventory = inventoryRepository.findByProducts_IdAndColor_IdAndTallas_Id(productoId, colorId,tallaId).orElseGet(() -> {
             Inventory nuevo = new Inventory();
             nuevo.setProducts(products);
             nuevo.setColor(color);
@@ -94,7 +94,7 @@ public class InventoryServiceImp implements InventoryService {
     @Override
     @Transactional(readOnly = true)
     public List<Inventory> listaPorProducto(Long productoId) {
-        return inventoryRepository.findAllByProductoId(productoId);
+        return inventoryRepository.findAllByProducts_Id(productoId);
     }
 
 

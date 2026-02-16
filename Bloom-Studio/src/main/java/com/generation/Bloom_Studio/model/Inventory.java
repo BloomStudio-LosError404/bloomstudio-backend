@@ -1,11 +1,14 @@
 package com.generation.Bloom_Studio.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
+@Table(name = "inventario")
 public class Inventory {
 
     @Id
@@ -28,7 +31,7 @@ public class Inventory {
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad = 0;
 
-    @UpdateTimestamp
+    @CreationTimestamp
     @Column(name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion;
 
@@ -98,10 +101,11 @@ public class Inventory {
         return cantidad;
     }
 
-    public void setCantidad(Integer cantidad){
-        if(cantidad == null || cantidad <0){
-            throw new IllegalArgumentException("La cantidad no puede ser nula ni negativa");
+    public void setCantidad(Integer cantidad) {
+        if (cantidad == null || cantidad < 0) {
+            throw new IllegalArgumentException("La cantidad no puede ser nula ni negativa.");
         }
+        this.cantidad = cantidad;
     }
 
     public LocalDateTime getFechaCreacion() {
