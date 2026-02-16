@@ -1,6 +1,7 @@
 package com.generation.Bloom_Studio.controller;
 
 import com.generation.Bloom_Studio.model.Colors;
+import com.generation.Bloom_Studio.service.ColorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,29 +14,29 @@ import java.util.List;
 public class ColorsController {
 
     @Autowired
-    private ColorsService colorService;
+    private ColorService colorService;
 
     @GetMapping
     public List<Colors> getAll() {
-        return etiquetaService.findAll();
+        return colorService.findAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Colors> getById(@PathVariable Long id) {
-        return etiquetaService.findById(id)
+        return colorService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public Colors create(@RequestBody Colors colors) {
-        return etiquetaService.save(colors);
+        return colorService.save(colors);
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        etiquetaService.delete(id);
+        colorService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

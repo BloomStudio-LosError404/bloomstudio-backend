@@ -4,7 +4,7 @@ import com.generation.Bloom_Studio.exceptions.ColorNotFoundException;
 import com.generation.Bloom_Studio.model.Colors;
 import com.generation.Bloom_Studio.repository.ColorsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 
@@ -23,7 +23,7 @@ public class ColorService {
     }
     //Metodo para recuperar todas las talals con el estatus en true
     public List<Colors> getTallatrue() {
-        return colorsRepository.findByEstatusTrue();
+        return colorsRepository.findByEstatus(Boolean.TRUE);
     }
 
     // Metodo para crear nueva talla
@@ -32,34 +32,34 @@ public class ColorService {
     }
 
     // findByNombreTalla
-    public Colors findByNombreTalla(String nombreTalla) {
-        return colorsRepository.findByNombreTalla(nombreTalla);
+    public List<Colors> findByNombreColor(String nombreColor) {
+        return colorsRepository.findByNombreColor(nombreColor);
     }
 
     // findById
-    public Talla findById(Long id) {
-        return tallaRepository.findById(id)
-                .orElseThrow(() -> new TallaNotFoundException(id));
+    public Colors findById(Long id) {
+        return colorsRepository.findById(id)
+                .orElseThrow(() -> new ColorNotFoundException(id));
     }
 
     // deleteTalla by ID
     public void deleteTalla(Long id) {
-        Talla talla = tallaRepository.findById(id)
-                .orElseThrow(() -> new TallaNotFoundException(id));
+        Colors talla = colorsRepository.findById(id)
+                .orElseThrow(() -> new ColorNotFoundException(id));
 
         talla.setEstatus(false);
-        tallaRepository.save(talla);
+        colorsRepository.save(talla);
     }
 
     // updateTalla
-    public Talla updateTalla(Talla talla, Long id) {
-        return tallaRepository.findById(id)
+    public Colors updateTalla(Colors colors, Long id) {
+        return colorsRepository.findById(id)
                 .map(tallaData -> {
-                    tallaData.setNombreTalla(talla.getNombreTalla());
-                    tallaData.setEstatus(talla.getEstatus());
-                    return tallaRepository.save(tallaData);
+                    tallaData.setNombre_color(colors.getNombre_color());
+                    tallaData.setEstatus(colors.getEstatus());
+                    return colorsRepository.save(tallaData);
                 })
-                .orElseThrow(() -> new TallaNotFoundException(id));
+                .orElseThrow(() -> new ColorNotFoundException(id));
     }
 
 

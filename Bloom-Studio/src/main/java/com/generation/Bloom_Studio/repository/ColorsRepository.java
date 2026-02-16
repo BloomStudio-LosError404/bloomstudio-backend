@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface ColorsRepository extends JpaRepository<Colors, Long> {
 
-    List<Colors> findByNombreEtiqueta(String nombreEtiqueta);
+    List<Colors> findByNombreColor(String nombreEtiqueta);
     List<Colors> findByEstatus(Boolean estatus);
 }
