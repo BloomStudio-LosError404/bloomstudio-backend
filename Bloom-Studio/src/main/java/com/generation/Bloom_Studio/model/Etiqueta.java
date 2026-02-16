@@ -4,6 +4,7 @@ package com.generation.Bloom_Studio.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -16,7 +17,7 @@ public class Etiqueta {
     private Long id_etiqueta;
 
     @Column(nullable = false, length = 50)
-    private String nombre_etiqueta;
+    private String nombreEtiqueta;
 
     private Boolean estatus;
 
@@ -27,13 +28,17 @@ public class Etiqueta {
 
     // cocneccion con productos n:m
 
+    @ManyToMany (mappedBy = "productos",cascade = CascadeType.ALL)
+    private List<Products> productos;
 
 
+    public Etiqueta() {
+    }
 
 
-    public Etiqueta(Long id_etiqueta, String nombre_etiqueta, Boolean estatus, LocalDateTime fecha_creacion, LocalDateTime fecha_actualizacion) {
+    public Etiqueta(Long id_etiqueta, String nombreEtiqueta, Boolean estatus, LocalDateTime fecha_creacion, LocalDateTime fecha_actualizacion) {
         this.id_etiqueta = id_etiqueta;
-        this.nombre_etiqueta = nombre_etiqueta;
+        this.nombreEtiqueta = nombreEtiqueta;
         this.estatus = estatus;
         this.fecha_creacion = fecha_creacion;
         this.fecha_actualizacion = fecha_actualizacion;
@@ -47,12 +52,12 @@ public class Etiqueta {
         this.id_etiqueta = id_etiqueta;
     }
 
-    public String getNombre_etiqueta() {
-        return nombre_etiqueta;
+    public String getNombreEtiqueta() {
+        return nombreEtiqueta;
     }
 
-    public void setNombre_etiqueta(String nombre_etiqueta) {
-        this.nombre_etiqueta = nombre_etiqueta;
+    public void setNombreEtiqueta(String nombreEtiqueta) {
+        this.nombreEtiqueta = nombreEtiqueta;
     }
 
     public Boolean getEstatus() {
@@ -79,6 +84,14 @@ public class Etiqueta {
         this.fecha_actualizacion = fecha_actualizacion;
     }
 
+    public List<Products> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Products> productos) {
+        this.productos = productos;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.fecha_creacion = LocalDateTime.now();
@@ -97,7 +110,7 @@ public class Etiqueta {
     public String toString() {
         return "Etiqueta{" +
                 "id_etiqueta=" + id_etiqueta +
-                ", nombre_etiqueta='" + nombre_etiqueta + '\'' +
+                ", nombreEtiqueta='" + nombreEtiqueta + '\'' +
                 ", estatus=" + estatus +
                 ", fecha_creacion=" + fecha_creacion +
                 ", fecha_actualizacion=" + fecha_actualizacion +
@@ -109,12 +122,12 @@ public class Etiqueta {
         if (this == o) return true;
         if (!(o instanceof Etiqueta etiqueta)) return false;
         return Objects.equals(id_etiqueta, etiqueta.id_etiqueta) &&
-                Objects.equals(nombre_etiqueta, etiqueta.nombre_etiqueta);
+                Objects.equals(nombreEtiqueta, etiqueta.nombreEtiqueta);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_etiqueta, nombre_etiqueta);
+        return Objects.hash(id_etiqueta, nombreEtiqueta);
     }
 
 
