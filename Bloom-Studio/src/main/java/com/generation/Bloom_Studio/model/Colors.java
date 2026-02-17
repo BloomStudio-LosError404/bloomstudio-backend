@@ -2,22 +2,25 @@ package com.generation.Bloom_Studio.model;
 
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 
 @Entity
-@Table(name = "etiquetas")
-public class Etiqueta {
+@Table(name = "colores")
+public class Colors {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_etiqueta;
+    @Column(name = "id_color")
+    private Long id;
 
-    @Column(nullable = false, length = 50)
-    private String nombreEtiqueta;
+    @Column(name = "nombre_color", nullable = false, length = 50)
+    private String nombreColor;
+
+    @Column(name = "codigo_hex", nullable = false, length = 7)
+    private String codigoHex;
 
     private Boolean estatus;
 
@@ -26,38 +29,47 @@ public class Etiqueta {
 
     private LocalDateTime fecha_actualizacion;
 
-    // cocneccion con productos n:m
+    @OneToMany(mappedBy = "",cascade = CascadeType.ALL)
+    private List<Inventory> inventories;
 
-    @ManyToMany (mappedBy = "",cascade = CascadeType.ALL)
-    private List<Products> productos;
-
-
-    public Etiqueta() {
-    }
+    // conección con productos 1:1
 
 
-    public Etiqueta(Long id_etiqueta, String nombreEtiqueta, Boolean estatus, LocalDateTime fecha_creacion, LocalDateTime fecha_actualizacion) {
-        this.id_etiqueta = id_etiqueta;
-        this.nombreEtiqueta = nombreEtiqueta;
+
+    public Colors(Long id, String nombreColor, String codigoHex, Boolean estatus, LocalDateTime fecha_creacion, LocalDateTime fecha_actualizacion) {
+        this.id = id;
+        this.nombreColor = nombreColor;
+        this.codigoHex = codigoHex;
         this.estatus = estatus;
         this.fecha_creacion = fecha_creacion;
         this.fecha_actualizacion = fecha_actualizacion;
     }
 
-    public Long getId_etiqueta() {
-        return id_etiqueta;
+    public Colors() {
     }
 
-    public void setId_etiqueta(Long id_etiqueta) {
-        this.id_etiqueta = id_etiqueta;
+    public Long getId() {
+        return id;
     }
 
-    public String getNombreEtiqueta() {
-        return nombreEtiqueta;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setNombreEtiqueta(String nombreEtiqueta) {
-        this.nombreEtiqueta = nombreEtiqueta;
+    public String getNombreColor() {
+        return nombreColor;
+    }
+
+    public void setNombreColor(String nombreColor) {
+        this.nombreColor = nombreColor;
+    }
+
+    public String getCodigoHex() {
+        return codigoHex;
+    }
+
+    public void setCodigoHex(String codigoHex) {
+        this.codigoHex = codigoHex;
     }
 
     public Boolean getEstatus() {
@@ -84,14 +96,6 @@ public class Etiqueta {
         this.fecha_actualizacion = fecha_actualizacion;
     }
 
-    public List<Products> getProductos() {
-        return productos;
-    }
-
-    public void setProductos(List<Products> productos) {
-        this.productos = productos;
-    }
-
     @PrePersist
     protected void onCreate() {
         this.fecha_creacion = LocalDateTime.now();
@@ -108,9 +112,10 @@ public class Etiqueta {
 
     @Override
     public String toString() {
-        return "Etiqueta{" +
-                "id_etiqueta=" + id_etiqueta +
-                ", nombreEtiqueta='" + nombreEtiqueta + '\'' +
+        return "Colors{" +
+                "id=" + id +
+                ", nombreColor'" + nombreColor + '\'' +
+                ", codigoHex='" + codigoHex + '\'' +
                 ", estatus=" + estatus +
                 ", fecha_creacion=" + fecha_creacion +
                 ", fecha_actualizacion=" + fecha_actualizacion +
@@ -119,16 +124,17 @@ public class Etiqueta {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Etiqueta etiqueta)) return false;
-        return Objects.equals(id_etiqueta, etiqueta.id_etiqueta) &&
-                Objects.equals(nombreEtiqueta, etiqueta.nombreEtiqueta);
+        if (!(o instanceof Colors colors)) return false;
+        return Objects.equals(id, colors.id) && Objects.equals(nombreColor, colors.nombreColor) && Objects.equals(codigoHex, colors.codigoHex);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_etiqueta, nombreEtiqueta);
+        return Objects.hash(id, nombreColor, codigoHex);
     }
 
 
+    public Long getIdColor() {
+        return 0L;
+    }
 }

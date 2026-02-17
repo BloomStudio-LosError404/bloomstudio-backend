@@ -1,6 +1,7 @@
 package com.generation.Bloom_Studio.service;
 
 
+import com.generation.Bloom_Studio.model.Colors;
 import com.generation.Bloom_Studio.model.Etiqueta;
 import com.generation.Bloom_Studio.repository.EtiquetaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
