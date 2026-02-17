@@ -108,6 +108,8 @@ public class Inventory {
         this.cantidad = cantidad;
     }
 
+
+
     public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }

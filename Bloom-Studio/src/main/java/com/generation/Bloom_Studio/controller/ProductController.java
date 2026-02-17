@@ -1,5 +1,10 @@
 package com.generation.Bloom_Studio.controller;
 
+import com.generation.Bloom_Studio.dto.CatalogProductDTO;
+import com.generation.Bloom_Studio.dto.ProductEstadoRequestDTO;
+import com.generation.Bloom_Studio.dto.ProductListDTO;
+import com.generation.Bloom_Studio.dto.ProductResponseDTO;
+import com.generation.Bloom_Studio.exceptions.product.ProductBadRequestException;
 import com.generation.Bloom_Studio.model.Products;
 import com.generation.Bloom_Studio.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,16 +30,35 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
+    @GetMapping("/admin")
+    public ResponseEntity<List<ProductListDTO>> listarTodos() {
+        return ResponseEntity.ok(productService.listarTodosConStock());
+    }
+
+    // ===== NUEVO: endpoint de catálogo para el frontend Shop =====
+    @GetMapping("/catalogo")
+    public ResponseEntity<List<CatalogProductDTO>> catalogo() {
+        return ResponseEntity.ok(productService.listarCatalogo());
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Products> obtenerId (@PathVariable Long id){
-        Products encontrado = productService.obtenerProductoId(id);
-        return ResponseEntity.ok(encontrado);
+    public ResponseEntity<ProductResponseDTO> obtenerProductoId(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.obtenerProductoConStock(id));
+    }
+
+    @PatchMapping("/{id}/estado")
+    public ResponseEntity<Products> cambiarEstado(@PathVariable Long id, @RequestBody ProductEstadoRequestDTO body) {
+        if (body == null || body.getEstadoProducto() == null) {
+            throw new ProductBadRequestException("Body inválido. Se requiere: estadoProducto.");
+        }
+
+        Products actualizado = productService.cambiarEstadoProducto(id, body.getEstadoProducto());
+        return ResponseEntity.ok(actualizado);
     }
 
     @GetMapping
-    public ResponseEntity<List<Products>> listaActivos(){
-        List<Products>products = productService.listaProductosActivos();
-        return ResponseEntity.ok(products);
+    public ResponseEntity<List<ProductListDTO>> listarActivos() {
+        return ResponseEntity.ok(productService.listarActivosConStock());
     }
 
     @PutMapping("/{id}")
@@ -48,23 +72,4 @@ public class ProductController {
         productService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(IllegalAccessException.class)
-    public ResponseEntity<String> manejarSolicitudes (IllegalArgumentException exception){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> menejarNoEncontrar (EntityNotFoundException exception){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> manejarIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-    }
-
-
-
-
 }

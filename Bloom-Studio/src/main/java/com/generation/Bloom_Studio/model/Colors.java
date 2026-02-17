@@ -45,6 +45,8 @@ public class Colors {
         this.fecha_actualizacion = fecha_actualizacion;
     }
 
+    public Colors() {
+    }
 
     public Long getId() {
         return id;
@@ -129,5 +131,10 @@ public class Colors {
     @Override
     public int hashCode() {
         return Objects.hash(id, nombreColor, codigoHex);
+    }
+
+
+    public Long getIdColor() {
+        return 0L;
     }
 }

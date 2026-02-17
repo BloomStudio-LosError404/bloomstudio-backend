@@ -6,8 +6,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "productos")
@@ -49,13 +51,15 @@ public class Products {
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
-    @ManyToMany (fetch = FetchType.LAZY)
-    @JoinTable(name = "producto_categoria",joinColumns = @JoinColumn(name = "id_producto"),inverseJoinColumns = @JoinColumn(name = "id_categoria"))
-    private List<Category> categorias;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "producto_categoria",joinColumns = @JoinColumn(name = "id_producto"),inverseJoinColumns = @JoinColumn(name = "id_categoria")
+    )
+    private Set<Category> categorias = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "producto_etiqueta",joinColumns = @JoinColumn(name = "id_producto"),inverseJoinColumns = @JoinColumn(name = "id_etiqueta"))
-    private List<Etiqueta> etiquetas;
+    @JoinTable(name = "producto_etiqueta",joinColumns = @JoinColumn(name = "id_producto"),inverseJoinColumns = @JoinColumn(name = "id_etiqueta")
+    )
+    private Set<Etiqueta> etiquetas = new HashSet<>();
 
     public Products(Long id, String sku, String nombre, String descripcion, BigDecimal precio, String imgUrl, EstadoProducto estadoProducto, Boolean estatus, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
         this.id = id;
@@ -72,25 +76,25 @@ public class Products {
 
     public Products(Long id, List<Category> categorias, List<Etiqueta> etiquetas) {
         this.id = id;
-        this.categorias = categorias;
-        this.etiquetas = etiquetas;
+        this.categorias = (Set<Category>) categorias;
+        this.etiquetas = (Set<Etiqueta>) etiquetas;
     }
 
     public Products(){}
 
-    public List<Category> getCategorias() {
+    public Set<Category> getCategorias() {
         return categorias;
     }
 
-    public void setCategorias(List<Category> categorias) {
+    public void setCategorias(Set<Category> categorias) {
         this.categorias = categorias;
     }
 
-    public List<Etiqueta> getEtiquetas() {
+    public Set<Etiqueta> getEtiquetas() {
         return etiquetas;
     }
 
-   public void setEtiquetas(List<Etiqueta> etiquetas) {
+    public void setEtiquetas(Set<Etiqueta> etiquetas) {
         this.etiquetas = etiquetas;
     }
 
