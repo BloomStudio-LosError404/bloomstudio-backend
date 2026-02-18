@@ -33,7 +33,7 @@ public class Products {
     @Column(name = "precio", nullable = false,precision = 10,scale = 2)
     private BigDecimal precio;
 
-    @Column(name = "img_url", length = 255)
+    @Column(name = "img_url", length = 500)
     private String imgUrl;
 
     @Convert(converter = EstadoProductoConverter.class)
