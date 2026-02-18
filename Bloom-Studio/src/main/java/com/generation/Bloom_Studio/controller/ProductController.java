@@ -1,10 +1,7 @@
 package com.generation.Bloom_Studio.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.generation.Bloom_Studio.dto.CatalogProductDTO;
-import com.generation.Bloom_Studio.dto.ProductEstadoRequestDTO;
-import com.generation.Bloom_Studio.dto.ProductListDTO;
-import com.generation.Bloom_Studio.dto.ProductResponseDTO;
+import com.generation.Bloom_Studio.dto.*;
 import com.generation.Bloom_Studio.exceptions.product.ProductBadRequestException;
 import com.generation.Bloom_Studio.model.Products;
 import com.generation.Bloom_Studio.service.CloudinaryService;
@@ -14,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.generation.Bloom_Studio.dto.CreateProductRequestDTO;
+
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class ProductController {
     }
 
     @PostMapping(value = "/con-imagen", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Products> crearConImagen(
+    public ResponseEntity<ProductResponseDTO> crearConImagen(
             @RequestPart("producto") String productoJson,
             @RequestPart("imagen") MultipartFile imagen
     ) {
@@ -54,18 +53,47 @@ public class ProductController {
         }
 
         try {
-            Products producto = objectMapper.readValue(productoJson, Products.class);
+            CreateProductRequestDTO dto = objectMapper.readValue(productoJson, CreateProductRequestDTO.class);
 
             String urlImagen = cloudinaryService.subirImagen(imagen);
-            producto.setImgUrl(urlImagen);
 
-            Products creado = productService.crearProducto(producto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+            Products creado = productService.crearProductoConRelaciones(dto, urlImagen);
+
+            ProductResponseDTO resp = new ProductResponseDTO();
+            resp.setId(creado.getId());
+            resp.setSku(creado.getSku());
+            resp.setNombre(creado.getNombre());
+            resp.setDescripcion(creado.getDescripcion());
+            resp.setPrecio(creado.getPrecio());
+            resp.setImgUrl(creado.getImgUrl());
+            resp.setEstadoProducto(creado.getEstadoProducto());
+            resp.setEstatus(creado.getEstatus());
+
+            resp.setStockTotal(0);
+
+            resp.setCategoriaNombres(
+                    creado.getCategorias() == null ? java.util.List.of()
+                            : creado.getCategorias().stream()
+                            .map(c -> c.getNombreCategoria())
+                            .toList()
+            );
+
+            resp.setEtiquetaNombres(
+                    creado.getEtiquetas() == null ? java.util.List.of()
+                            : creado.getEtiquetas().stream()
+                            .map(e -> e.getNombreEtiqueta())
+                            .toList()
+            );
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+
 
         } catch (Exception e) {
             throw new ProductBadRequestException("No se pudo procesar el producto o la imagen: " + e.getMessage());
         }
     }
+
+
 
     @GetMapping("/admin")
     public ResponseEntity<List<ProductListDTO>> listarTodos() {

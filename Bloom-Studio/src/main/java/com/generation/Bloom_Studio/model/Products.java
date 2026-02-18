@@ -74,12 +74,6 @@ public class Products {
         this.fechaActualizacion = fechaActualizacion;
     }
 
-    public Products(Long id, List<Category> categorias, List<Etiqueta> etiquetas) {
-        this.id = id;
-        this.categorias = (Set<Category>) categorias;
-        this.etiquetas = (Set<Etiqueta>) etiquetas;
-    }
-
     public Products(){}
 
     public Set<Category> getCategorias() {

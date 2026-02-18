@@ -1,11 +1,13 @@
 package com.generation.Bloom_Studio.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -28,8 +30,10 @@ public class Etiqueta {
 
     // cocneccion con productos n:m
 
-    @ManyToMany (mappedBy = "",cascade = CascadeType.ALL)
-    private List<Products> productos;
+    @ManyToMany(mappedBy = "etiquetas")
+    @JsonIgnore
+    private Set<Products> productos = new java.util.HashSet<>();
+
 
 
     public Etiqueta() {
@@ -84,12 +88,12 @@ public class Etiqueta {
         this.fecha_actualizacion = fecha_actualizacion;
     }
 
-    public List<Products> getProductos() {
+    public Set<Products> getProductos() {
         return productos;
     }
 
-    public void setProductos(List<Products> productos) {
-        this.productos = productos;
+    public void setProductos(Set<Products> productos) {
+        this.productos = (productos != null) ? productos : new java.util.HashSet<>();
     }
 
     @PrePersist

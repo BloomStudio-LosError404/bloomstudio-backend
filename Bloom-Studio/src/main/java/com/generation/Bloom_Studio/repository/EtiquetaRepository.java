@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface EtiquetaRepository extends JpaRepository<Etiqueta, Long> {
-
-    List<Category> findByNombreEtiqueta(String nombreEtiqueta);
+    List<Etiqueta> findByNombreEtiqueta(String nombreEtiqueta);
     List<Etiqueta> findByEstatus(Boolean estatus);
 }
+
