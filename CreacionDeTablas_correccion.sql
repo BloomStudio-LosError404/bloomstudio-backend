@@ -117,7 +117,7 @@ CREATE TABLE pedidos (
     id_pedido BIGINT AUTO_INCREMENT PRIMARY KEY,
     id_usuario BIGINT,
     fecha_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
-    total DECIMAL(10, 2) NOT NULL,
+    total_order DECIMAL(10, 2) NOT NULL,
     estado_pedido ENUM('pendiente', 'pagado', 'enviado', 'entregado') DEFAULT 'pendiente',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
@@ -132,3 +132,8 @@ CREATE TABLE detalle_pedido (
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
     FOREIGN KEY (id_inventario) REFERENCES inventario(id_inventario)
 );
+
+
+DROP TABLE detalle_pedido;
+DROP TABLE pedidos;
+-- Dejar que SpringBoot cree las tablas con los datos que ya se le dieron
