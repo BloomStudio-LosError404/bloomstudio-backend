@@ -29,7 +29,7 @@ public class Category {
     private LocalDateTime fechaActualizacion;
 
 // cocneccion con productos n:m
-    @ManyToMany (mappedBy = "",cascade = CascadeType.ALL)
+    @ManyToMany (mappedBy = "productos",cascade = CascadeType.ALL)
     private List<Products>productos;
 
 
