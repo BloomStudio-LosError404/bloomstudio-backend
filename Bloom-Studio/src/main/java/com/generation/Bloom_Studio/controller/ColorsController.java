@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/colores")
-
+@CrossOrigin(origins = "*")
 public class ColorsController {
 
     private final ColorService colorService;
