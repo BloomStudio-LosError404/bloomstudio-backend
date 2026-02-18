@@ -28,7 +28,7 @@ public class Category {
     @Column (name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
-//cocneccion con productos n:m
+// cocneccion con productos n:m
     @ManyToMany (mappedBy = "productos",cascade = CascadeType.ALL)
     private List<Products>productos;
 
