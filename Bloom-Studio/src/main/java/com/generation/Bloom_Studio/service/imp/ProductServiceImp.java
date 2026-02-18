@@ -278,12 +278,7 @@ public class ProductServiceImp implements ProductService {
 
             dto.setEtiquetas(etiquetas);
 
-            dto.setImagen(
-                     new CatalogProductDTO.ImagenDTO(
-                            p.getImgUrl(),
-                            p.getNombre()
-                    )
-            );
+            dto.setImagen(new CatalogProductDTO.ImagenDTO(p.getImgUrl(), p.getNombre()));
 
             dto.setStockTotal(stockTotal);
 
