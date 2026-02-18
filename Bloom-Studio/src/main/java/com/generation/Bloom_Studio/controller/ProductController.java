@@ -93,6 +93,36 @@ public class ProductController {
         }
     }
 
+    @PutMapping("/{id}/categorias-etiquetas")
+    public ResponseEntity<ProductResponseDTO> actualizarCategoriasEtiquetas(
+            @PathVariable Long id,
+            @RequestBody CreateProductRequestDTO dto
+    ) {
+        Products actualizado = productService.actualizarCategoriasEtiquetas(id, dto.getCategoriaIds(), dto.getEtiquetaIds());
+
+        ProductResponseDTO resp = new ProductResponseDTO();
+        resp.setId(actualizado.getId());
+        resp.setSku(actualizado.getSku());
+        resp.setNombre(actualizado.getNombre());
+        resp.setDescripcion(actualizado.getDescripcion());
+        resp.setPrecio(actualizado.getPrecio());
+        resp.setImgUrl(actualizado.getImgUrl());
+        resp.setEstadoProducto(actualizado.getEstadoProducto());
+        resp.setEstatus(actualizado.getEstatus());
+        resp.setStockTotal(0);
+
+        resp.setCategoriaNombres(
+                actualizado.getCategorias() == null ? java.util.List.of()
+                        : actualizado.getCategorias().stream().map(c -> c.getNombreCategoria()).toList()
+        );
+        resp.setEtiquetaNombres(
+                actualizado.getEtiquetas() == null ? java.util.List.of()
+                        : actualizado.getEtiquetas().stream().map(e -> e.getNombreEtiqueta()).toList()
+        );
+
+        return ResponseEntity.ok(resp);
+    }
+
 
 
     @GetMapping("/admin")

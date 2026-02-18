@@ -32,4 +32,6 @@ public interface ProductService {
 
     List<CatalogProductDTO> listarCatalogo();
 
+    Products actualizarCategoriasEtiquetas(Long productId, List<Long> categoriaIds, List<Long> etiquetaIds);
+
 }

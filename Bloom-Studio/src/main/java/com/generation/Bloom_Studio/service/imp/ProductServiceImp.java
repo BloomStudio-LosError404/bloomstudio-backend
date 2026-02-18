@@ -108,6 +108,32 @@ public class ProductServiceImp implements ProductService {
         return productoRepository.save(guardado);
     }
 
+    @Override
+    public Products actualizarCategoriasEtiquetas(Long productId, List<Long> categoriaIds, List<Long> etiquetaIds) {
+
+        Products p = productoRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con id: " + productId));
+
+        if (categoriaIds != null) {
+            Set<Category> categorias = new HashSet<>(categoryRepository.findAllById(categoriaIds));
+            if (categorias.size() != categoriaIds.size()) {
+                throw new ProductBadRequestException("Una o más categorías no existen.");
+            }
+            p.setCategorias(categorias);
+        }
+
+        if (etiquetaIds != null) {
+            Set<Etiqueta> etiquetas = new HashSet<>(etiquetaRepository.findAllById(etiquetaIds));
+            if (etiquetas.size() != etiquetaIds.size()) {
+                throw new ProductBadRequestException("Una o más etiquetas no existen.");
+            }
+            p.setEtiquetas(etiquetas);
+        }
+
+        return productoRepository.save(p);
+    }
+
+
 
     @Override
     public Products crearProducto(Products products) {
