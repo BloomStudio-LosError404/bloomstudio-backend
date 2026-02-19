@@ -1,9 +1,7 @@
 package com.generation.Bloom_Studio.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +9,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "colores")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Colors {
 
     @Id
@@ -32,8 +29,12 @@ public class Colors {
 
     private LocalDateTime fecha_actualizacion;
 
-    @OneToMany(mappedBy = "",cascade = CascadeType.ALL)
+    // Colors.java
+    @OneToMany(mappedBy = "color")
     private List<Inventory> inventories;
+
+    public Long getIdColor() { return this.id; }
+
 
     // conección con productos 1:1
 
@@ -137,7 +138,5 @@ public class Colors {
     }
 
 
-    public Long getIdColor() {
-        return 0L;
-    }
 }
+
