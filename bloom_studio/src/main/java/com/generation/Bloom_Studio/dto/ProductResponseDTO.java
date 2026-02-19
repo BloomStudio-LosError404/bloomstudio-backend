@@ -17,6 +17,8 @@ public class ProductResponseDTO {
     private long stockTotal;
     List<String> categoriaNombres;
     List<String> etiquetaNombres;
+    private List<Long> etiquetaIds;
+    private List<Long> categoriaIds;
 
     public ProductResponseDTO() {}
 
@@ -103,7 +105,22 @@ public class ProductResponseDTO {
     public List<String> getEtiquetaNombres() {
         return etiquetaNombres;
     }
+    public List<Long> getEtiquetaIds() {
+        return etiquetaIds;
+    }
 
+    public void setEtiquetaIds(List<Long> etiquetaIds) {
+        this.etiquetaIds = etiquetaIds;
+    }
+
+    public List<Long> getCategoriaIds() {
+        return categoriaIds;
+    }
+
+    public void setCategoriaIds(List<Long> categoriaIds) {
+        this.categoriaIds = categoriaIds;
+    }
+    
     public void setEtiquetaNombres(List<String> etiquetaNombres) {
         this.etiquetaNombres = etiquetaNombres;
     }
