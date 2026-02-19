@@ -18,7 +18,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/productos")
-@CrossOrigin(origins = "*")
+@CrossOrigin(
+    origins = "*",
+        methods = {
+                RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.PUT,
+                RequestMethod.DELETE,
+                RequestMethod.PATCH,
+                RequestMethod.OPTIONS
+        }
+)
 public class ProductController {
 
     private final ProductService productService;
@@ -92,28 +102,6 @@ public class ProductController {
             throw new ProductBadRequestException("No se pudo procesar el producto o la imagen: " + e.getMessage());
         }
     }
-    @PutMapping(value = "/{id}/imagen", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Products> actualizarImagen(
-            @PathVariable Long id,
-            @RequestPart("imagen") MultipartFile imagen
-    ) {
-        if (imagen == null || imagen.isEmpty()) {
-            throw new ProductBadRequestException("La imagen es obligatoria.");
-        }
-        String contentType = imagen.getContentType();
-        if (contentType == null || !contentType.startsWith("image/")) {
-            throw new ProductBadRequestException("El archivo debe ser una imagen (image/*).");
-        }
-
-        try {
-            String urlImagen = cloudinaryService.subirImagen(imagen);
-            Products actualizado = productService.actualizarImagenProducto(id, urlImagen);
-            return ResponseEntity.ok(actualizado);
-        } catch (Exception e) {
-            throw new ProductBadRequestException("No se pudo actualizar la imagen: " + e.getMessage());
-        }
-    }
-
 
     @PutMapping("/{id}/categorias-etiquetas")
     public ResponseEntity<ProductResponseDTO> actualizarCategoriasEtiquetas(
@@ -157,7 +145,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.listarCatalogo());
     }
 
-    @GetMapping("/{id}")
+       @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> obtenerProductoId(@PathVariable Long id) {
         return ResponseEntity.ok(productService.obtenerProductoConStock(id));
     }
@@ -168,7 +156,7 @@ public class ProductController {
             throw new ProductBadRequestException("Body inválido. Se requiere: estadoProducto.");
         }
 
-        Products actualizado = productService.cambiarEstadoProducto(id, body.getEstadoProducto());
+          Products actualizado = productService.cambiarEstadoProducto(id, body.getEstadoProducto());
         return ResponseEntity.ok(actualizado);
     }
 
@@ -183,9 +171,84 @@ public class ProductController {
         return ResponseEntity.ok(actualizado);
     }
 
-    @DeleteMapping("/{id}")
+     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProducto (@PathVariable Long id){
         productService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
+
+    //eliminarcategoria
+    @DeleteMapping("/{productoId}/categoria/{categoriaId}")
+    public ResponseEntity<Void> eliminarCategoriaDeProducto(
+            @PathVariable Long productoId,
+            @PathVariable Long categoriaId) {
+
+        productService.eliminarCategoria(productoId, categoriaId);
+        return ResponseEntity.noContent().build();
+    }
+    //eliminaretiqueta
+    @DeleteMapping("/{productoId}/etiquetas/{etiquetaId}")
+    public ResponseEntity<Void> eliminarEtiquetaDeProducto(
+            @PathVariable Long productoId,
+            @PathVariable Long etiquetaId) {
+
+        productService.eliminarEtiqueta(productoId, etiquetaId);
+        return ResponseEntity.noContent().build();
+    }
+    //
+    // AGREGAR CATEGORIA
+    @PostMapping("/{productoId}/categoria/{categoriaId}")
+    public ResponseEntity<Void> agregarCategoria(
+            @PathVariable Long productoId,
+            @PathVariable Long categoriaId) {
+
+        productService.agregarCategoria(productoId, categoriaId);
+        return ResponseEntity.ok().build();
+    }
+
+    // AGREGAR ETIQUETA
+    @PostMapping("/{productoId}/etiquetas/{etiquetaId}")
+    public ResponseEntity<Void> agregarEtiqueta(
+            @PathVariable Long productoId,
+            @PathVariable Long etiquetaId) {
+
+        productService.agregarEtiqueta(productoId, etiquetaId);
+        return ResponseEntity.ok().build();
+    }
+
+    
+    @PutMapping(value = "/{id}/imagen", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Products> actualizarImagen(
+            @PathVariable Long id,
+            @RequestPart("imagen") MultipartFile imagen
+    ) {
+        if (imagen == null || imagen.isEmpty()) {
+            throw new ProductBadRequestException("La imagen es obligatoria.");
+        }
+        String contentType = imagen.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new ProductBadRequestException("El archivo debe ser una imagen (image/*).");
+        }
+
+        try {
+            String urlImagen = cloudinaryService.subirImagen(imagen);
+            Products actualizado = productService.actualizarImagenProducto(id, urlImagen);
+            return ResponseEntity.ok(actualizado);
+        } catch (Exception e) {
+            throw new ProductBadRequestException("No se pudo actualizar la imagen: " + e.getMessage());
+        }
+    }
+
+
+    
+
+ 
+    
+
+      
+
+    
+    
+
+   
 }
