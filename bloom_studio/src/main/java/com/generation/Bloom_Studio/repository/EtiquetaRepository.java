@@ -13,3 +13,4 @@ public interface EtiquetaRepository extends JpaRepository<Etiqueta, Long> {
     List<Etiqueta> findByNombreEtiqueta(String nombreEtiqueta);
     List<Etiqueta> findByEstatus(Boolean estatus);
 }
+
