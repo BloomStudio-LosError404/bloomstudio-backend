@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/productos/**").hasRole("ADMIN")
 
                         // 4. EL RESTO: Requiere estar autenticado (Cliente o Admin)
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No usamos cookies/sesiones
                 .authenticationProvider(authenticationProvider()) // Usamos nuestro proveedor
