@@ -51,7 +51,7 @@ public class RecuperacionService {
         );
         tokenRepository.save(tokenRecuperacion);
 
-        String urlFrontend = "http://127.0.0.1:5502/Login/reset_password.html"; // La ruta del FRONTEND en GoLive
+        String urlFrontend = "http://127.0.0.1:5500/Login/reset_password.html"; // La ruta del FRONTEND en GoLive
         String link = urlFrontend + "?token=" + token;
 
         sendEmail(email, "Recuperación de Contraseña - Bloom Studio",
