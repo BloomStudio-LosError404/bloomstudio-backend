@@ -39,6 +39,21 @@ public class EtiquetaController {
         etiquetaService.delete(id);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping("/editar/{id}")
+    public ResponseEntity<Etiqueta> update(@PathVariable Long id,
+                                           @RequestBody Etiqueta etiquetaActualizada) {
 
+        return etiquetaService.findById(id)
+                .map(etiqueta -> {
+
+                    etiqueta.setNombreEtiqueta(etiquetaActualizada.getNombreEtiqueta());
+                    etiqueta.setEstatus(etiquetaActualizada.getEstatus());
+
+                    etiquetaService.save(etiqueta);
+
+                    return ResponseEntity.ok(etiqueta);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 
 }
