@@ -29,7 +29,12 @@ public class EtiquetaService {
     }
 
     public void delete(Long id) {
-        etiquetaRepository.deleteById(id);
+
+        Etiqueta etiqueta = etiquetaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Etiqueta no encontrada con id: " + id));
+
+        etiqueta.setEstatus(false); // Soft delete
+        etiquetaRepository.save(etiqueta);
     }
 
 

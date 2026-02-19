@@ -18,7 +18,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/productos")
-@CrossOrigin(origins = "*")
+@CrossOrigin(
+        origins = "*",
+        methods = {
+                RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.PUT,
+                RequestMethod.DELETE,
+                RequestMethod.PATCH,
+                RequestMethod.OPTIONS
+        }
+)
 public class ProductController {
 
     private final ProductService productService;
@@ -165,5 +175,43 @@ public class ProductController {
     public ResponseEntity<Void> eliminarProducto (@PathVariable Long id){
         productService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
+    }
+    //eliminarcategoria
+    @DeleteMapping("/{productoId}/categoria/{categoriaId}")
+    public ResponseEntity<Void> eliminarCategoriaDeProducto(
+            @PathVariable Long productoId,
+            @PathVariable Long categoriaId) {
+
+        productService.eliminarCategoria(productoId, categoriaId);
+        return ResponseEntity.noContent().build();
+    }
+    //eliminaretiqueta
+    @DeleteMapping("/{productoId}/etiquetas/{etiquetaId}")
+    public ResponseEntity<Void> eliminarEtiquetaDeProducto(
+            @PathVariable Long productoId,
+            @PathVariable Long etiquetaId) {
+
+        productService.eliminarEtiqueta(productoId, etiquetaId);
+        return ResponseEntity.noContent().build();
+    }
+    //
+    // AGREGAR CATEGORIA
+    @PostMapping("/{productoId}/categoria/{categoriaId}")
+    public ResponseEntity<Void> agregarCategoria(
+            @PathVariable Long productoId,
+            @PathVariable Long categoriaId) {
+
+        productService.agregarCategoria(productoId, categoriaId);
+        return ResponseEntity.ok().build();
+    }
+
+    // AGREGAR ETIQUETA
+    @PostMapping("/{productoId}/etiquetas/{etiquetaId}")
+    public ResponseEntity<Void> agregarEtiqueta(
+            @PathVariable Long productoId,
+            @PathVariable Long etiquetaId) {
+
+        productService.agregarEtiqueta(productoId, etiquetaId);
+        return ResponseEntity.ok().build();
     }
 }

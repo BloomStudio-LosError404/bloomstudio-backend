@@ -10,6 +10,7 @@ import com.generation.Bloom_Studio.repository.EtiquetaRepository;
 import com.generation.Bloom_Studio.repository.InventoryRepository;
 import com.generation.Bloom_Studio.repository.ProductoRepository;
 import com.generation.Bloom_Studio.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.generation.Bloom_Studio.exceptions.product.ProductBadRequestException;
@@ -26,6 +27,7 @@ public class ProductServiceImp implements ProductService {
 
     private final ProductoRepository productoRepository;
     private final InventoryRepository inventoryRepository;
+    @Autowired
     private final CategoryRepository categoryRepository;
     private final EtiquetaRepository etiquetaRepository;
 
@@ -133,6 +135,18 @@ public class ProductServiceImp implements ProductService {
         return productoRepository.save(p);
     }
 
+    @Override
+    @Transactional
+    public void eliminarCategoria(Long productoId, Long categoriaId) {
+
+        Products producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        producto.getCategorias()
+                .removeIf(c -> c.getIdCategoria().equals(categoriaId));
+
+        productoRepository.save(producto);
+    }
 
 
     @Override
@@ -233,10 +247,10 @@ public class ProductServiceImp implements ProductService {
 
         return productoRepository.save(guardado);
     }
-
     @Override
     @Transactional(readOnly = true)
     public ProductResponseDTO obtenerProductoConStock(Long id) {
+
         Products p = productoRepository.findWithRelacionesById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con id: " + id));
 
@@ -253,17 +267,40 @@ public class ProductServiceImp implements ProductService {
         dto.setEstatus(p.getEstatus());
         dto.setStockTotal(stock);
 
-        dto.setCategoriaNombres(
-                p.getCategorias().stream()
-                        .map(Category::getNombreCategoria)
-                        .toList()
-        );
+        // 🔥 PROTECCIÓN CONTRA NULL
+        if (p.getCategorias() != null) {
+            dto.setCategoriaNombres(
+                    p.getCategorias().stream()
+                            .map(Category::getNombreCategoria)
+                            .toList()
+            );
 
-        dto.setEtiquetaNombres(
-                p.getEtiquetas().stream()
-                        .map(Etiqueta::getNombreEtiqueta)
-                        .toList()
-        );
+            dto.setCategoriaIds(
+                    p.getCategorias().stream()
+                            .map(Category::getIdCategoria)
+                            .toList()
+            );
+        } else {
+            dto.setCategoriaNombres(List.of());
+            dto.setCategoriaIds(List.of());
+        }
+
+        if (p.getEtiquetas() != null) {
+            dto.setEtiquetaNombres(
+                    p.getEtiquetas().stream()
+                            .map(Etiqueta::getNombreEtiqueta)
+                            .toList()
+            );
+
+            dto.setEtiquetaIds(
+                    p.getEtiquetas().stream()
+                            .map(Etiqueta::getId_etiqueta)
+                            .toList()
+            );
+        } else {
+            dto.setEtiquetaNombres(List.of());
+            dto.setEtiquetaIds(List.of());
+        }
 
         return dto;
     }
@@ -375,4 +412,46 @@ public class ProductServiceImp implements ProductService {
 
         return resultado;
     }
+
+    @Override
+    @Transactional
+    public void eliminarEtiqueta(Long productoId, Long etiquetaId) {
+
+        Products producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        producto.getEtiquetas()
+                .removeIf(e -> e.getId_etiqueta().equals(etiquetaId));
+
+        productoRepository.save(producto);
+    }
+
+    @Override
+    public void agregarCategoria(Long productoId, Long categoriaId) {
+
+        Products producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        Category categoria = categoryRepository.findById(categoriaId)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+
+        producto.getCategorias().add(categoria);
+
+        productoRepository.save(producto);
+    }
+
+    @Override
+    public void agregarEtiqueta(Long productoId, Long etiquetaId) {
+
+        Products producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        Etiqueta etiqueta = etiquetaRepository.findById(etiquetaId)
+                .orElseThrow(() -> new RuntimeException("Etiqueta no encontrada"));
+
+        producto.getEtiquetas().add(etiqueta);
+
+        productoRepository.save(producto);
+    }
+
 }

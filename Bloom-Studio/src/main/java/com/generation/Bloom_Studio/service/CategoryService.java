@@ -48,12 +48,13 @@ public class CategoryService {
 
     // deleteCategory por ID
 
-    public void deleteCategory (Long idCategoria) throws CategoryPrincipalNotFoundException {
-        if(categoryRepository.existsById(idCategoria)){
-            categoryRepository.deleteById(idCategoria);
-        }else {
-            throw new CategoryPrincipalNotFoundException(idCategoria);
-        }
+    public void deleteCategory(Long idCategoria) throws CategoryPrincipalNotFoundException {
+
+        Category category = categoryRepository.findById(idCategoria)
+                .orElseThrow(() -> new CategoryPrincipalNotFoundException(idCategoria));
+
+        category.setEstatus(false); // Soft delete
+        categoryRepository.save(category);
     }
 
     // updateCategory
