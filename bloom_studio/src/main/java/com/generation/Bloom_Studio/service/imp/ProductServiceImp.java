@@ -1,9 +1,12 @@
 package com.generation.Bloom_Studio.service.imp;
 
 import com.generation.Bloom_Studio.dto.CatalogProductDTO;
+import com.generation.Bloom_Studio.dto.CreateProductRequestDTO;
 import com.generation.Bloom_Studio.dto.ProductListDTO;
 import com.generation.Bloom_Studio.dto.ProductResponseDTO;
 import com.generation.Bloom_Studio.model.*;
+import com.generation.Bloom_Studio.repository.CategoryRepository;
+import com.generation.Bloom_Studio.repository.EtiquetaRepository;
 import com.generation.Bloom_Studio.repository.InventoryRepository;
 import com.generation.Bloom_Studio.repository.ProductoRepository;
 import com.generation.Bloom_Studio.service.ProductService;
@@ -23,10 +26,15 @@ public class ProductServiceImp implements ProductService {
 
     private final ProductoRepository productoRepository;
     private final InventoryRepository inventoryRepository;
+    private final CategoryRepository categoryRepository;
+    private final EtiquetaRepository etiquetaRepository;
 
-    public ProductServiceImp(ProductoRepository productoRepository, InventoryRepository inventoryRepository) {
+
+    public ProductServiceImp(ProductoRepository productoRepository, InventoryRepository inventoryRepository, CategoryRepository categoryRepository, EtiquetaRepository etiquetaRepository) {
         this.productoRepository = productoRepository;
         this.inventoryRepository = inventoryRepository;
+        this.categoryRepository = categoryRepository;
+        this.etiquetaRepository = etiquetaRepository;
     }
 
     private void syncProductoPorStock(Products producto) {
@@ -46,6 +54,86 @@ public class ProductServiceImp implements ProductService {
             producto.setEstadoProducto(EstadoProducto.AGOTADO);
         }
     }
+
+    @Override
+    public Products crearProductoConRelaciones(CreateProductRequestDTO dto, String imgUrl) {
+
+        if (dto == null) {
+            throw new ProductBadRequestException("El body del producto es obligatorio.");
+        }
+        if (dto.getSku() == null || dto.getSku().isBlank()) {
+            throw new ProductConflictException("El SKU es obligatorio.");
+        }
+        if (dto.getNombre() == null || dto.getNombre().isBlank()) {
+            throw new ProductBadRequestException("El nombre es obligatorio.");
+        }
+        if (dto.getPrecio() == null) {
+            throw new ProductBadRequestException("El precio es obligatorio.");
+        }
+        if (productoRepository.existsBySku(dto.getSku())) {
+            throw new ProductConflictException("Ya existe un producto con el SKU: " + dto.getSku());
+        }
+        if (imgUrl == null || imgUrl.isBlank()) {
+            throw new ProductBadRequestException("La URL de imagen es obligatoria.");
+        }
+
+        Products p = new Products();
+        p.setSku(dto.getSku());
+        p.setNombre(dto.getNombre());
+        p.setDescripcion(dto.getDescripcion());
+        p.setPrecio(dto.getPrecio());
+        p.setImgUrl(imgUrl);
+
+
+        if (dto.getCategoriaIds() != null && !dto.getCategoriaIds().isEmpty()) {
+            Set<Category> categorias = new HashSet<>(categoryRepository.findAllById(dto.getCategoriaIds()));
+            if (categorias.size() != dto.getCategoriaIds().size()) {
+                throw new ProductBadRequestException("Una o más categorías no existen.");
+            }
+            p.setCategorias(categorias);
+        }
+
+        if (dto.getEtiquetaIds() != null && !dto.getEtiquetaIds().isEmpty()) {
+            Set<Etiqueta> etiquetas = new HashSet<>(etiquetaRepository.findAllById(dto.getEtiquetaIds()));
+            if (etiquetas.size() != dto.getEtiquetaIds().size()) {
+                throw new ProductBadRequestException("Una o más etiquetas no existen.");
+            }
+            p.setEtiquetas(etiquetas);
+        }
+
+        Products guardado = productoRepository.save(p);
+
+        syncProductoPorStock(guardado);
+
+        return productoRepository.save(guardado);
+    }
+
+    @Override
+    public Products actualizarCategoriasEtiquetas(Long productId, List<Long> categoriaIds, List<Long> etiquetaIds) {
+
+        Products p = productoRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con id: " + productId));
+
+        if (categoriaIds != null) {
+            Set<Category> categorias = new HashSet<>(categoryRepository.findAllById(categoriaIds));
+            if (categorias.size() != categoriaIds.size()) {
+                throw new ProductBadRequestException("Una o más categorías no existen.");
+            }
+            p.setCategorias(categorias);
+        }
+
+        if (etiquetaIds != null) {
+            Set<Etiqueta> etiquetas = new HashSet<>(etiquetaRepository.findAllById(etiquetaIds));
+            if (etiquetas.size() != etiquetaIds.size()) {
+                throw new ProductBadRequestException("Una o más etiquetas no existen.");
+            }
+            p.setEtiquetas(etiquetas);
+        }
+
+        return productoRepository.save(p);
+    }
+
+
 
     @Override
     public Products crearProducto(Products products) {
@@ -82,6 +170,16 @@ public class ProductServiceImp implements ProductService {
     public List<Products> listaProductosActivos() {
         return productoRepository.findByEstatusTrue();
     }
+
+    @Override
+    public Products actualizarImagenProducto(Long id, String imgUrl) {
+        Products producto = productoRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con id: " + id));
+
+        producto.setImgUrl(imgUrl);
+        return productoRepository.save(producto);
+    }
+
 
     @Override
     public Products actualizarProducto(Long id, Products products) {
@@ -278,12 +376,7 @@ public class ProductServiceImp implements ProductService {
 
             dto.setEtiquetas(etiquetas);
 
-            dto.setImagen(
-                     new CatalogProductDTO.ImagenDTO(
-                            p.getImgUrl(),
-                            p.getNombre()
-                    )
-            );
+            dto.setImagen(new CatalogProductDTO.ImagenDTO(p.getImgUrl(), p.getNombre()));
 
             dto.setStockTotal(stockTotal);
 
