@@ -20,6 +20,7 @@ public class ProductResponseDTO {
     private List<Long> etiquetaIds;
     private List<Long> categoriaIds;
 
+
     public ProductResponseDTO() {}
 
     public Long getId() {
@@ -121,4 +122,8 @@ public class ProductResponseDTO {
     public void setEtiquetaNombres(List<String> etiquetaNombres) {
         this.etiquetaNombres = etiquetaNombres;
     }
+    public List<Long> getEtiquetaIds() {
+        return etiquetaIds;
+    }
+
 }

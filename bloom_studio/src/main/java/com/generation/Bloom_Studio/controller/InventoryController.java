@@ -11,9 +11,19 @@ import com.generation.Bloom_Studio.exceptions.inventory.InventoryBadRequestExcep
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(
+        origins = "*",
+        allowedHeaders = "*",
+        methods = {
+                RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.PUT,
+                RequestMethod.PATCH,
+                RequestMethod.DELETE
+        }
+)
 @RestController
 @RequestMapping("/api/v1/inventario")
-@CrossOrigin(origins = "*")
 public class InventoryController {
 
     private final InventoryService inventoryService;
