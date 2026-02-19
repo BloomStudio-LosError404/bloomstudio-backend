@@ -1,10 +1,12 @@
 package com.generation.Bloom_Studio.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "categorias")
@@ -29,8 +31,10 @@ public class Category {
     private LocalDateTime fechaActualizacion;
 
 // cocneccion con productos n:m
-    @ManyToMany (mappedBy = "",cascade = CascadeType.ALL)
-    private List<Products>productos;
+    @ManyToMany(mappedBy = "categorias")
+    @JsonIgnore
+    private Set<Products> productos = new java.util.HashSet<>();
+
 
 
     public Category(Long idCategoria, String nombreCategoria, Boolean estatus, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
