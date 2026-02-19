@@ -35,7 +35,7 @@ public class Products {
     @Column(name = "precio", nullable = false,precision = 10,scale = 2)
     private BigDecimal precio;
 
-    @Column(name = "img_url", length = 255)
+    @Column(name = "img_url", length = 500)
     private String imgUrl;
 
     @Convert(converter = EstadoProductoConverter.class)
@@ -74,12 +74,6 @@ public class Products {
         this.estatus = estatus;
         this.fechaCreacion = fechaCreacion;
         this.fechaActualizacion = fechaActualizacion;
-    }
-
-    public Products(Long id, List<Category> categorias, List<Etiqueta> etiquetas) {
-        this.id = id;
-        this.categorias = (Set<Category>) categorias;
-        this.etiquetas = (Set<Etiqueta>) etiquetas;
     }
 
     public Products(){}
