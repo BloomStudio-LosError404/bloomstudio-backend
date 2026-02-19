@@ -1,16 +1,18 @@
 package com.generation.Bloom_Studio.controller;
 
-import com.generation.Bloom_Studio.dto.CatalogProductDTO;
-import com.generation.Bloom_Studio.dto.ProductEstadoRequestDTO;
-import com.generation.Bloom_Studio.dto.ProductListDTO;
-import com.generation.Bloom_Studio.dto.ProductResponseDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.generation.Bloom_Studio.dto.*;
 import com.generation.Bloom_Studio.exceptions.product.ProductBadRequestException;
 import com.generation.Bloom_Studio.model.Products;
+import com.generation.Bloom_Studio.service.CloudinaryService;
 import com.generation.Bloom_Studio.service.ProductService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.generation.Bloom_Studio.dto.CreateProductRequestDTO;
+
 
 import java.util.List;
 
@@ -18,10 +20,17 @@ import java.util.List;
 @RequestMapping("/api/v1/productos")
 @CrossOrigin(origins = "*")
 public class ProductController {
-    private final ProductService productService;
 
-    public ProductController(ProductService productService){
+    private final ProductService productService;
+    private final CloudinaryService cloudinaryService;
+    private final ObjectMapper objectMapper;
+
+    public ProductController(ProductService productService,
+                             CloudinaryService cloudinaryService,
+                             ObjectMapper objectMapper) {
         this.productService = productService;
+        this.cloudinaryService = cloudinaryService;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping
@@ -30,12 +39,119 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
+    @PostMapping(value = "/con-imagen", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponseDTO> crearConImagen(
+            @RequestPart("producto") String productoJson,
+            @RequestPart("imagen") MultipartFile imagen
+    ) {
+        if (imagen == null || imagen.isEmpty()) {
+            throw new ProductBadRequestException("La imagen es obligatoria.");
+        }
+        String contentType = imagen.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new ProductBadRequestException("El archivo debe ser una imagen (image/*).");
+        }
+
+        try {
+            CreateProductRequestDTO dto = objectMapper.readValue(productoJson, CreateProductRequestDTO.class);
+
+            String urlImagen = cloudinaryService.subirImagen(imagen);
+
+            Products creado = productService.crearProductoConRelaciones(dto, urlImagen);
+
+            ProductResponseDTO resp = new ProductResponseDTO();
+            resp.setId(creado.getId());
+            resp.setSku(creado.getSku());
+            resp.setNombre(creado.getNombre());
+            resp.setDescripcion(creado.getDescripcion());
+            resp.setPrecio(creado.getPrecio());
+            resp.setImgUrl(creado.getImgUrl());
+            resp.setEstadoProducto(creado.getEstadoProducto());
+            resp.setEstatus(creado.getEstatus());
+
+            resp.setStockTotal(0);
+
+            resp.setCategoriaNombres(
+                    creado.getCategorias() == null ? java.util.List.of()
+                            : creado.getCategorias().stream()
+                            .map(c -> c.getNombreCategoria())
+                            .toList()
+            );
+
+            resp.setEtiquetaNombres(
+                    creado.getEtiquetas() == null ? java.util.List.of()
+                            : creado.getEtiquetas().stream()
+                            .map(e -> e.getNombreEtiqueta())
+                            .toList()
+            );
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+
+
+        } catch (Exception e) {
+            throw new ProductBadRequestException("No se pudo procesar el producto o la imagen: " + e.getMessage());
+        }
+    }
+    @PutMapping(value = "/{id}/imagen", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Products> actualizarImagen(
+            @PathVariable Long id,
+            @RequestPart("imagen") MultipartFile imagen
+    ) {
+        if (imagen == null || imagen.isEmpty()) {
+            throw new ProductBadRequestException("La imagen es obligatoria.");
+        }
+        String contentType = imagen.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new ProductBadRequestException("El archivo debe ser una imagen (image/*).");
+        }
+
+        try {
+            String urlImagen = cloudinaryService.subirImagen(imagen);
+            Products actualizado = productService.actualizarImagenProducto(id, urlImagen);
+            return ResponseEntity.ok(actualizado);
+        } catch (Exception e) {
+            throw new ProductBadRequestException("No se pudo actualizar la imagen: " + e.getMessage());
+        }
+    }
+
+
+    @PutMapping("/{id}/categorias-etiquetas")
+    public ResponseEntity<ProductResponseDTO> actualizarCategoriasEtiquetas(
+            @PathVariable Long id,
+            @RequestBody CreateProductRequestDTO dto
+    ) {
+        Products actualizado = productService.actualizarCategoriasEtiquetas(id, dto.getCategoriaIds(), dto.getEtiquetaIds());
+
+        ProductResponseDTO resp = new ProductResponseDTO();
+        resp.setId(actualizado.getId());
+        resp.setSku(actualizado.getSku());
+        resp.setNombre(actualizado.getNombre());
+        resp.setDescripcion(actualizado.getDescripcion());
+        resp.setPrecio(actualizado.getPrecio());
+        resp.setImgUrl(actualizado.getImgUrl());
+        resp.setEstadoProducto(actualizado.getEstadoProducto());
+        resp.setEstatus(actualizado.getEstatus());
+        resp.setStockTotal(0);
+
+        resp.setCategoriaNombres(
+                actualizado.getCategorias() == null ? java.util.List.of()
+                        : actualizado.getCategorias().stream().map(c -> c.getNombreCategoria()).toList()
+        );
+        resp.setEtiquetaNombres(
+                actualizado.getEtiquetas() == null ? java.util.List.of()
+                        : actualizado.getEtiquetas().stream().map(e -> e.getNombreEtiqueta()).toList()
+        );
+
+        return ResponseEntity.ok(resp);
+    }
+
+
+
     @GetMapping("/admin")
     public ResponseEntity<List<ProductListDTO>> listarTodos() {
         return ResponseEntity.ok(productService.listarTodosConStock());
     }
 
-    // ===== NUEVO: endpoint de catálogo para el frontend Shop =====
     @GetMapping("/catalogo")
     public ResponseEntity<List<CatalogProductDTO>> catalogo() {
         return ResponseEntity.ok(productService.listarCatalogo());
