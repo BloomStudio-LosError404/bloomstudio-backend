@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -37,5 +38,20 @@ public class PedidoController {
     public ResponseEntity<List<Pedido>> misPedidos() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return ResponseEntity.ok(pedidoService.misPedidos(auth.getName()));
+    }
+
+    @PostMapping("/cart/add")
+    public ResponseEntity<?> addToCart(@RequestBody Map<String, Object> data) {
+        return ResponseEntity.ok("Producto agregado al carrito");
+    }
+
+    @PostMapping("/cart/remove")
+    public ResponseEntity<?> removeFromCart(@RequestBody Map<String, Object> data) {
+        return ResponseEntity.ok("Producto removido del carrito");
+    }
+    @GetMapping("/cart")
+    public ResponseEntity<?> getCart() {
+
+        return ResponseEntity.ok("Carrito cargado");
     }
 }

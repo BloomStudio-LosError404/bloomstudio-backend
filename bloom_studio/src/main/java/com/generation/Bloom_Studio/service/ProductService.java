@@ -15,10 +15,14 @@ public interface ProductService {
     Products crearProductoConRelaciones(CreateProductRequestDTO dto, String imgUrl);
 
     Products crearProducto(Products products);
-    Products obtenerProductoId (Long id);
+
+    Products obtenerProductoId(Long id);
+
     List<Products> listaProductosActivos();
+
     Products actualizarProducto(Long id, Products products);
-    void eliminarProducto (Long id);
+
+    void eliminarProducto(Long id);
 
     Products cambiarEstadoProducto(Long id, EstadoProducto nuevoEstado);
 
@@ -34,6 +38,11 @@ public interface ProductService {
 
     Products actualizarCategoriasEtiquetas(Long productId, List<Long> categoriaIds, List<Long> etiquetaIds);
 
-    Products actualizarImagenProducto(Long id, String imgUrl);
+    void eliminarCategoria(Long productoId, Long categoriaId);
 
+    void eliminarEtiqueta(Long productoId, Long etiquetaId);
+    void agregarCategoria(Long productoId, Long categoriaId);
+    void agregarEtiqueta(Long productoId, Long etiquetaId);
+
+    Products actualizarImagenProducto(Long id, String imgUrl);
 }
