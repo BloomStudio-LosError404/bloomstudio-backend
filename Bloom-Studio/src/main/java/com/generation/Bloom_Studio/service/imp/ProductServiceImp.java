@@ -187,6 +187,7 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public Products actualizarProducto(Long id, Products products) {
+
         Products existente = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con id: " + id));
 
@@ -194,7 +195,8 @@ public class ProductServiceImp implements ProductService {
             if(products.getSku().isBlank()){
                 throw new ProductBadRequestException("El SKU no puede ser vacío.");
             }
-            if(!products.getSku().equals(existente.getSku()) && productoRepository.existsBySku(products.getSku())){
+            if(!products.getSku().equals(existente.getSku())
+                    && productoRepository.existsBySku(products.getSku())){
                 throw new ProductConflictException("Ya existe un producto con el SKU: " + products.getSku());
             }
             existente.setSku(products.getSku());
@@ -207,17 +209,20 @@ public class ProductServiceImp implements ProductService {
             existente.setNombre(products.getNombre());
         }
 
-        if(products.getDescripcion() != null) existente.setDescripcion(products.getDescripcion());
-        if(products.getPrecio() != null) existente.setPrecio(products.getPrecio());
-        if(products.getImgUrl() != null) existente.setImgUrl(products.getImgUrl());
-        if(products.getCategorias() != null) existente.setCategorias(products.getCategorias());
-        if(products.getEtiquetas() != null) existente.setEtiquetas(products.getEtiquetas());
+        if(products.getDescripcion() != null)
+            existente.setDescripcion(products.getDescripcion());
+
+        if(products.getPrecio() != null)
+            existente.setPrecio(products.getPrecio());
+
+        if(products.getImgUrl() != null)
+            existente.setImgUrl(products.getImgUrl());
 
         Products guardado = productoRepository.save(existente);
 
         syncProductoPorStock(guardado);
 
-        return productoRepository.save(guardado);
+        return guardado;
     }
 
     @Override
