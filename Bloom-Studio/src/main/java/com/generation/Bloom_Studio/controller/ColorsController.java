@@ -41,11 +41,10 @@ public class ColorsController {
     }
 
     // PUT actualizar color
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Colors> updateColor(@RequestBody Colors color, @PathVariable Long id){
         Colors colorActualizado = colorService.updateColor(color, id);
         return ResponseEntity.ok(colorActualizado);
-
     }
 
     // DELETE (soft delete)
