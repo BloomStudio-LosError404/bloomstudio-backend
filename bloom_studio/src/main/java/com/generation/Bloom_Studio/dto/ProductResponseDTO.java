@@ -55,6 +55,10 @@ public class ProductResponseDTO {
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
+    public BigDecimal getPrecio() {
+        return precio;
+    }
+
 
     public String getImgUrl() {
         return imgUrl;
